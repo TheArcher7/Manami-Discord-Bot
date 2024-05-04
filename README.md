@@ -1,6 +1,6 @@
 This is a very basic discord bot created through the help of tutorials. It is written in python and is up to date with the discord API as of 2024.
 
-
+![Manami Okuda Discord Bot being demonstrated in discord by sending messages in chat and recieving responses](/Example.png)
 
 The Bot uses commands such as hello and roll. More features are yet to be implemented.
 
