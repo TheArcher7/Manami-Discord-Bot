@@ -12,4 +12,4 @@ This bot needs several permissions in order to run:
 5. Mention Everyone
 6. Add Reactions
 
-Here is the invite link: https://discord.com/oauth2/authorize?client_id=1234941064385790084&permissions=274878106688&scope=bot
+Here is the [invite link](https://discord.com/oauth2/authorize?client_id=1234941064385790084&permissions=274878106688&scope=bot)
