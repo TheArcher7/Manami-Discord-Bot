@@ -14,13 +14,22 @@ class Server_UserWords(dict):
             self[username] += value
         else:
             self[username] = value
+
+    def printformat(self) -> str:
+        l = list(self)
+        s = self.servername +" "+ str(len(l))
+        for i in range(len(l)):
+            s = s +"\n"+ l[i] +" "+ str(self[l[i]])
+        return s + "\n"
     
 class ServerLevelManager:
     # read the article for more on reading and writing to files in python
     # https://realpython.com/read-write-files-python/
     num_servers = 0
     servers: Server_UserWords = []
+    filename: str = ""
     def __init__(self, filename: str) -> None:
+        self.filename = filename
         with open(filename, 'r') as file:
             self.num_servers = file.readline(1) #gets the 1st character from line 1
             for i in range(self.num_servers):
@@ -39,7 +48,12 @@ class ServerLevelManager:
         pass
     def save_to_file(self) -> None:
         # TODO implement member
-        pass
+        for server in self.servers:
+            sorted(server)
+        with open(self.filename, 'w') as file:
+            for i in range(len(self.servers)):
+                file.write(server.printformat())
+        
     def process(self, servername: str, username: str, message: str) -> None:
         # remove all spaces from server name to make it easier to split
         servername.replace(" ", "")
@@ -55,6 +69,7 @@ TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 intents: Intents = Intents.default()
 intents.message_content = True
 client: Client = Client(intents=intents)
+wordcount: ServerLevelManager = ServerLevelManager('servers_stats.txt')
 
 async def send_message(message: Message, user_message: str) -> None:
     if not user_message:
