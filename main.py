@@ -56,6 +56,12 @@ class ServerLevelManager:
         with open(self.filename, 'w') as file:
             for i in range(len(self.servers)):
                 file.write(server.printformat())
+
+    def save_counter(self) -> None:
+        self.save_counter +=1
+        if self.save_counter > 10: 
+            #every 10 messages, the program will save the statistics to file
+            self.save_to_file()
         
     def process(self, servername: str, username: str, message: str) -> None:
         # remove all spaces from server name to make it easier to split
@@ -63,13 +69,11 @@ class ServerLevelManager:
         for i in range(len(self.servers)): # TODO optimize. currently runs a linear search on servers
             if self.servers[i].servername == servername:
                 self.servers[i].add(username, message)
+                self.save_couner()
                 return
         self.servers.append(Server_UserWords(servername).add(username, message))
-
-        self.save_counter +=1
-        if self.save_counter > 10: 
-            #every 10 messages, the program will save the statistics to file
-            self.save_to_file()
+        print("New server added to database")
+        self.save_couner()
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
