@@ -33,16 +33,19 @@ class ServerLevelManager:
         self.load_from_file(filename)
     
     def load_from_file(self, filename: str) -> None:
+        print("Loading servers and data from file...")
         self.filename = filename
         with open(filename, 'r') as file:
-            self.num_servers = int(file.readline(1)) #gets the 1st character from line 1
+            self.num_servers = int(file.readline())
+            print(f"TotalServers={self.num_servers}")
             for i in range(self.num_servers):
-                ser = file.readline().split(" ")
+                ser = file.readline().split()
                 servername, users = ser[0], int(ser[1])
+                print(f"ServerName={ser[0]} NumUsers={ser[1]}")
                 ns = Server_UserWords(servername)
                 self.servers.append(ns) 
                 for j in range(users):
-                    u = file.readline().split(" ")
+                    u = file.readline().split()
                     user, level = u[0], int(u[1])
                     # TODO upon reading, check if user exists before they are added (some may have deleted their accounts from discord)
                     ns.add(user, level)
