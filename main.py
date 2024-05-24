@@ -28,7 +28,11 @@ class ServerLevelManager:
     num_servers = 0
     servers: Server_UserWords = []
     filename: str = ""
+    save_counter = 0
     def __init__(self, filename: str) -> None:
+        self.load_from_file(filename)
+    
+    def load_from_file(self, filename: str) -> None:
         self.filename = filename
         with open(filename, 'r') as file:
             self.num_servers = file.readline(1) #gets the 1st character from line 1
@@ -42,12 +46,8 @@ class ServerLevelManager:
                     user, level = u[0], int(u[1])
                     # TODO upon reading, check if user exists before they are added (some may have deleted their accounts from discord)
                     ns.add(user, level)
-    
-    def load_from_file(self) -> None:
-        # TODO implement member
-        pass
+
     def save_to_file(self) -> None:
-        # TODO implement member
         for server in self.servers:
             sorted(server)
         with open(self.filename, 'w') as file:
@@ -63,13 +63,18 @@ class ServerLevelManager:
                 return
         self.servers.append(Server_UserWords(servername).add(username, message))
 
+        self.save_counter +=1
+        if self.save_counter > 10: 
+            #every 10 messages, the program will save the statistics to file
+            self.save_to_file()
+
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 
 intents: Intents = Intents.default()
 intents.message_content = True
 client: Client = Client(intents=intents)
-wordcount: ServerLevelManager = ServerLevelManager('servers_stats.txt')
+wordcounter: ServerLevelManager = ServerLevelManager('servers_stats.txt')
 
 async def send_message(message: Message, user_message: str) -> None:
     if not user_message:
@@ -84,10 +89,13 @@ async def send_message(message: Message, user_message: str) -> None:
     except Exception as e:
         print(e)
 
+async def process_leveling(server: str, user: str, message: str):
+    # TODO implement member
+    pass
+
 @client.event
 async def on_ready() -> None:
     print(f'{client.user} is now running!')
-
 
 @client.event
 async def on_message(message: Message) -> None:
