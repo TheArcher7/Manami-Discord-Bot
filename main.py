@@ -25,7 +25,7 @@ class Server_UserWords(dict):
 class ServerLevelManager:
     # read the article for more on reading and writing to files in python
     # https://realpython.com/read-write-files-python/
-    num_servers = 0
+    num_servers: int = 0
     servers: Server_UserWords = []
     filename: str = ""
     save_counter = 0
@@ -35,7 +35,7 @@ class ServerLevelManager:
     def load_from_file(self, filename: str) -> None:
         self.filename = filename
         with open(filename, 'r') as file:
-            self.num_servers = file.readline(1) #gets the 1st character from line 1
+            self.num_servers = int(file.readline(1)) #gets the 1st character from line 1
             for i in range(self.num_servers):
                 ser = file.readline().split(" ")
                 servername, users = ser[0], int(ser[1])
