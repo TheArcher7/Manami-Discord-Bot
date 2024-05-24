@@ -85,13 +85,14 @@ async def send_message(message: Message, user_message: str) -> None:
 
     try:
         response: str = get_response(user_message)
+        if (response == "!"):
+            return
         await message.author.send(response) if is_private else await message.channel.send(response)
     except Exception as e:
         print(e)
 
 async def process_leveling(server: str, user: str, message: str):
-    # TODO implement member
-    pass
+    wordcounter.process(server, user, message)
 
 @client.event
 async def on_ready() -> None:
@@ -111,6 +112,7 @@ async def on_message(message: Message) -> None:
 
     print(f'{username} +{length} in {server}') #logs the message statistics in the terminal
 
+    await process_leveling(server, username, user_message)
     await send_message(message, user_message)
 
 #Step 5: MAIN ENTRY POINT
