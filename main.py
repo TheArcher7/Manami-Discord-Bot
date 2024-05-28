@@ -5,11 +5,12 @@ from discord import Intents, Client, Message
 from responses import get_response
 
 class Server_UserWords(dict):
-    def __init__(self, servername) -> None:
+    servername: str = ""
+    def __init__(self, servername: str) -> None:
         self.servername = servername
         self = dict()
 
-    def add(self, username, value):
+    def add(self, username: str, value: int):
         if username in self:
             self[username] += value
         else:
@@ -28,7 +29,7 @@ class ServerLevelManager:
     num_servers: int = 0
     servers: Server_UserWords = []
     filename: str = ""
-    save_counter = 0
+    save_counter: int = 0
     def __init__(self, filename: str) -> None:
         self.load_from_file(filename)
     
@@ -54,26 +55,34 @@ class ServerLevelManager:
         for server in self.servers:
             sorted(server)
         with open(self.filename, 'w') as file:
+            file.write(str(len(self.servers)) + "\n")
             for i in range(len(self.servers)):
-                file.write(server.printformat())
+                file.write(self.servers[i].printformat())
 
-    def save_counter(self) -> None:
+    def save_count(self) -> None:
         self.save_counter +=1
-        if self.save_counter > 10: 
+        if self.save_counter > 9: 
             #every 10 messages, the program will save the statistics to file
+            print("Saved server statistics to file")
             self.save_to_file()
+            self.save_counter = 0
         
     def process(self, servername: str, username: str, message: str) -> None:
         # remove all spaces from server name to make it easier to split
-        servername.replace(" ", "")
-        for i in range(len(self.servers)): # TODO optimize. currently runs a linear search on servers
-            if self.servers[i].servername == servername:
-                self.servers[i].add(username, message)
-                self.save_couner()
+        servername = servername.replace(" ", "")
+        # check all currently saved servers
+        for server in self.servers: # TODO optimize. currently runs a linear search on servers
+            # print(f"Debug \n{server.printformat()}")
+            if server.servername == servername:
+                server.add(username, len(message))
+                self.save_count()
                 return
-        self.servers.append(Server_UserWords(servername).add(username, message))
+        # add a new server
+        newServer: Server_UserWords = Server_UserWords(servername) # you can't create a new object and use its method in the same line
+        newServer.add(username, len(message))
+        self.servers.append(newServer)
         print("New server added to database")
-        self.save_couner()
+        self.save_count()
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')

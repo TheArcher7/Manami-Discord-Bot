@@ -8,8 +8,8 @@ def get_response(user_input: str) -> str:
         return 'Well, you\'re awfully silent...'
     elif 'hello' in lowered:
         return 'Hello there!'
-    elif 'how are you' in lowered:
-        return 'Good, thanks!'
+    elif 'ping' in lowered:
+        return 'pong'
     elif 'bye' in lowered:
         return 'See you!'
     elif 'roll dice' in lowered:
