@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from discord import Intents, Client, Message
 from responses import get_response
+from datetime import datetime
 
 class Server_UserWords(dict):
     servername: str = ""
@@ -63,7 +64,8 @@ class ServerLevelManager:
         self.save_counter +=1
         if self.save_counter > 9: 
             #every 10 messages, the program will save the statistics to file
-            print("Saved server statistics to file")
+            current_time = datetime.now().strftime("%H:%M:%S")
+            print("Saved server statistics to file. ", current_time)
             self.save_to_file()
             self.save_counter = 0
         
@@ -124,9 +126,9 @@ async def on_message(message: Message) -> None:
     channel: str = str(message.channel)
     server: str = str(message.guild)
     length: int = len(user_message)
-    #print(f'[{server} in # {channel}] (from {username}) "{user_message}"') #logs the incomming message in the terminal
-
-    print(f'{username} +{length} in {server}') #logs the message statistics in the terminal
+    
+    # print(f'[{server} in # {channel}] (from {username}) "{user_message}"') #logs the incomming message in the terminal
+    # print(f'{username} +{length} in {server}') #logs the message statistics in the terminal
 
     await process_leveling(server, username, user_message)
     await send_message(message, user_message)
