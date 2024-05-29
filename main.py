@@ -86,6 +86,14 @@ class ServerLevelManager:
         print("New server added to database")
         self.save_count()
 
+    def get_level(self, servername: str, username: str) -> int:
+        level: int = -1
+        for server in self.servers:
+            if server.servername == servername:
+                level = server[username]
+                break
+        return level
+
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
 
@@ -105,6 +113,8 @@ async def send_message(message: Message, user_message: str) -> None:
         response: str = get_response(user_message)
         if (response == "!"):
             return
+        if (response == 'lev'):
+            response = wordcounter.get_level(str(message.guild).replace(" ", ""), str(message.author))
         await message.author.send(response) if is_private else await message.channel.send(response)
     except Exception as e:
         print(e)

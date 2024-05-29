@@ -7,5 +7,5 @@ ServerNameExample2 2
 user4 500
 user5 3394
 TheArcher7'sStudyCorner 2
-thearcher7 370
+thearcher7 467
 waterbird_62 333

@@ -10,6 +10,8 @@ def get_response(user_input: str) -> str:
         return 'Hello there!'
     elif 'ping' in lowered:
         return 'pong'
+    elif '!level' in lowered:
+        return 'lev'
     elif 'bye' in lowered:
         return 'See you!'
     elif 'roll dice' in lowered:
