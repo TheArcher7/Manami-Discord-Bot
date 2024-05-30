@@ -1,3 +1,4 @@
+import math
 from typing import Final
 import os
 from dotenv import load_dotenv
@@ -86,13 +87,26 @@ class ServerLevelManager:
         print("New server added to database")
         self.save_count()
 
-    def get_level(self, servername: str, username: str) -> int:
+    def get_level(self, servername: str, username: str, scalefactor=1000) -> int:
         level: int = -1
         for server in self.servers:
             if server.servername == servername:
-                level = server[username]
+                characters = server[username]
+                level = math.floor(math.sqrt(characters / scalefactor)) + 1
                 break
         return level
+    
+    def get_characters_to_next_level(self, servername: str, username: str, scalefactor=1000) -> int:
+        additional_characters: int = -1
+        for server in self.servers:
+            if server.servername == servername:
+                characters = server[username]
+                current_level = math.floor(math.sqrt(characters / scalefactor)) + 1
+                characters_next_level = (current_level + 1) ** 2 * scalefactor
+                additional_characters = characters_next_level - characters
+                break
+        return additional_characters
+    
 
 load_dotenv()
 TOKEN: Final[str] = os.getenv('DISCORD_TOKEN')
@@ -115,6 +129,10 @@ async def send_message(message: Message, user_message: str) -> None:
             return
         if (response == 'lev'):
             response = wordcounter.get_level(str(message.guild).replace(" ", ""), str(message.author))
+        if (response == 'next'):
+            chars = wordcounter.get_characters_to_next_level(str(message.guild).replace(" ", ""), str(message.author))
+            response = str(f"You need to type {chars} characters to reach the next level.")
+            
         await message.author.send(response) if is_private else await message.channel.send(response)
     except Exception as e:
         print(e)
